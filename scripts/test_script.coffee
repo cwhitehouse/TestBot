@@ -14,5 +14,5 @@
 
 module.exports = (robot) ->
 
-	robot.hear /test_bot test/i, (res) ->
+	robot.respond /test/i, (res) ->
 		res.send "Test complete"

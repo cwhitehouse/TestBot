@@ -14,7 +14,7 @@
 
 module.exports = (robot) ->
 
-  robot.hear /test_bot badger/i, (res) ->
+  robot.respond /badger/i, (res) ->
     res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
   
   # robot.respond /open the (.*) doors/i, (res) ->
