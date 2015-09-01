@@ -9,10 +9,10 @@
 #   These are from the scripting documentation: https://github.com/github/hubot/blob/master/docs/scripting.md
 #
 # Commands:
-# 	testbot test - Test it.
+# 	test_bot test - Test it.
 #
 
 module.exports = (robot) ->
 
-	robot.hear /test/i, (res) ->
+	robot.hear /test_bot test/i, (res) ->
 		res.send "Test complete"

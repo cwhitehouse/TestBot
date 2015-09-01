@@ -9,12 +9,12 @@
 #   These are from the scripting documentation: https://github.com/github/hubot/blob/master/docs/scripting.md
 #
 # Commands:
-#   testbot badger - Summons badgers!
+#   test_bot badger - Summons badgers!
 #
 
 module.exports = (robot) ->
 
-  robot.hear /badger/i, (res) ->
+  robot.hear /test_bot badger/i, (res) ->
     res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
   
   # robot.respond /open the (.*) doors/i, (res) ->
