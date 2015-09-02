@@ -17,7 +17,7 @@
 module.exports = (robot) ->
 
 	robot.respond /test/i, (res) ->
-		res.send "Test complete"
+		res.send "Test complete : channel = #{res.channel || res.message.room}"
 
 	robot.respond /products( (\d+))?/i, (res) ->
 		productHuntToken = process.env.PRODUCT_HUNT_API_TOKEN
