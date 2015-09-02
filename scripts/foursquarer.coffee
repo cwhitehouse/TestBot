@@ -136,7 +136,7 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 							"value"			: phrases.join(", ")
 						}
 
-					if venue.tips?
+					if venue.tips?.groups?.items?
 						tips = venue.tips.groups[0].items[..2].map (t) -> "#{t.text} _\u2014#{t.user.firstName} #{t.user.lastName || ""}_"
 						fields.push {
 							"title"			: "Tips"
