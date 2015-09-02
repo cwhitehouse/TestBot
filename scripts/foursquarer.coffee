@@ -137,10 +137,10 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 						}
 
 					if venue.tips?.groups?[0]?.items?.length
-						tips = venue.tips.groups[0].items[..2].map (t) -> "#{t.text} _\u2014#{t.user.firstName} #{t.user.lastName || ""}_"
+						tips = venue.tips.groups[0].items[..2].map (t) -> "```#{t.text}\n\u2014 #{t.user.firstName} #{t.user.lastName || ""}```"
 						fields.push {
 							"title"			: "Tips"
-							"value"			: tips.join("\n\n")
+							"value"			: tips.join("\n")
 						}
 
 					description == null
