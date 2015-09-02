@@ -115,7 +115,7 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 							"short"			: true
 						}
 
-					if venue.categories?
+					if venue.categories?.length
 						categories = venue.categories.map (c) -> c.shortName
 						fields.push {
 							"title"			: "Categories"
@@ -129,19 +129,23 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 							"value"			: venue.menu.url
 						}
 
-					if venue.phrases?
+					if venue.phrases?.length
 						phrases = venue.phrases.map (p) -> p.phrase
 						fields.push {
 							"title"			: "People Mention"
 							"value"			: phrases.join(", ")
 						}
 
-					if venue.tips?.groups?[0]?.items?
+					if venue.tips?.groups?[0]?.items?.length
 						tips = venue.tips.groups[0].items[..2].map (t) -> "#{t.text} _\u2014#{t.user.firstName} #{t.user.lastName || ""}_"
 						fields.push {
 							"title"			: "Tips"
 							"value"			: tips.join("\n\n")
 						}
+
+					description == null
+					if venue.name || venue.description
+						description = "#{venue.name || ""}\n#{venue.description || ""}"
 
 					photoURL = null
 					if venue.photos?.groups?[0]?.items?[0]?
@@ -154,14 +158,14 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 						"title"			: venue.name
 						"title_link"	: venue.canonicalUrl
 						"fields"		: fields
-						"text"			: "#{venue.url}\n#{venue.description || ""}"
+						"text"			: description
 						"thumb_url"		: photoURL
 						"mrkdwn_in"		: ["text", "pretext", "fields"]
 					}]
 
 					postData = JSON.stringify({
 						"attachments" 	: attachments
-						"channel"		: formattedChannel res
+#						"channel"		: formattedChannel res
 					})
 					robot.http(slackWebhook)
 						.post(postData) (err, response, body) ->
