@@ -14,10 +14,16 @@
 #	test_bot products X - Get the X top products on product hunt today
 #
 
+formattedChannel = (res) ->
+	if res.message.room == res.message.user.name
+		"@#{res.message.room}"
+	else
+		"##{res.message.room}"
+
 module.exports = (robot) ->
 
 	robot.respond /test/i, (res) ->
-		res.send "Test complete\nchannel = #{res.channel}\nroom = #{res.message.room}"
+		res.send "Test complete\nchannel = #{formattedChannel res}\nuser = #{res.message.user.name}"
 
 	robot.respond /products( (\d+))?/i, (res) ->
 		productHuntToken = process.env.PRODUCT_HUNT_API_TOKEN
@@ -62,7 +68,7 @@ module.exports = (robot) ->
 
 							postData = JSON.stringify({
 								"attachments" 	: attachments
-								"channel"		: res.message.room
+								"channel"		: formattedChannel res
 							})
 							robot.http(slackWebhook)
 									.post(postData) (err, response, body) ->
