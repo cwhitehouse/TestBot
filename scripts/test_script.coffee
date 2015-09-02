@@ -10,7 +10,8 @@
 #
 # Commands:
 # 	test_bot test - Test it.
-#	test_bot products - Get the top posts on product hunt today
+#	test_bot products - Get the 5 top products on product hunt today
+#	test_bot products X - Get the X top products on product hunt today
 #
 
 module.exports = (robot) ->
@@ -18,7 +19,7 @@ module.exports = (robot) ->
 	robot.respond /test/i, (res) ->
 		res.send "Test complete"
 
-	robot.respond /products/i, (res) ->
+	robot.respond /products( (\d+))?/i, (res) ->
 		productHuntToken = process.env.PRODUCT_HUNT_API_TOKEN
 		slackWebhook = process.env.SLACK_WEB_HOOK
 
@@ -29,6 +30,13 @@ module.exports = (robot) ->
 		unless slackWebhook
 			res.send "Please set the SLACK_WEB_HOOK environment variable"
 			return
+
+		count = res.match[1] || 5
+		unless count > 0
+			res.send "Please ask for a number greater than 0..."
+			return
+
+		res.send "Let's see what's new on Prodct Hunt!"
 
 		robot.http("https://api.producthunt.com/v1/posts")
 			.headers("Authorization": "Bearer #{productHuntToken}", "Accept": "application/json", "Content-Type": "application/json", "Host": "api.producthunt.com")
@@ -41,12 +49,9 @@ module.exports = (robot) ->
 
 							attachments = []
 
-							posts = data.posts
-							for post in posts[..5]
-								fallback = "#{post.name}\n#{post.tagline}\n#{post.discussion_url}"
-
-								attachment = {
-									"fallback"		: fallback
+							for post in data.posts[..(count-1)]
+								attachments.push {
+									"fallback"		: "#{post.name}\n#{post.tagline}\n#{post.discussion_url}"
 									"color"			: "#da552f"
 									"author_name"	: post.user.name
 									"author_link"	: post.user.profile_url
@@ -56,7 +61,6 @@ module.exports = (robot) ->
 									"text"			: post.tagline
 									"image_url"		: post.screenshot_url["300px"]
 								}
-								attachments.push attachment
 
 							postData = JSON.stringify({
 								"attachments" 	: attachments
