@@ -36,8 +36,6 @@ module.exports = (robot) ->
 			res.send "Please ask for a number greater than 0..."
 			return
 
-		res.send "Let's see what's new on Prodct Hunt!"
-
 		robot.http("https://api.producthunt.com/v1/posts")
 			.headers("Authorization": "Bearer #{productHuntToken}", "Accept": "application/json", "Content-Type": "application/json", "Host": "api.producthunt.com")
 			.get() (err, response, body) ->
