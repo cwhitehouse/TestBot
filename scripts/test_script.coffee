@@ -19,19 +19,16 @@ module.exports = (robot) ->
 		res.send "Test complete"
 
 	robot.respond /products/i, (res) ->
-		res.send "Fetching from Product Hunt"
-
 		productHuntToken = process.env.PRODUCT_HUNT_API_TOKEN
+		slackWebhook = process.env.SLACK_WEB_HOOK
+
 		unless productHuntToken
 			res.send "Please set the PRODUCT_HUNT_API_TOKEN environment variable"
 			return
 
-		slackWebhook = process.env.SLACK_WEB_HOOK
 		unless slackWebhook
 			res.send "Please set the SLACK_WEB_HOOK environment variable"
 			return
-
-		res.send "Received message from #{res.message.room}"
 
 		robot.http("https://api.producthunt.com/v1/posts")
 			.headers("Authorization": "Bearer #{productHuntToken}", "Accept": "application/json", "Content-Type": "application/json", "Host": "api.producthunt.com")
@@ -65,7 +62,6 @@ module.exports = (robot) ->
 								"attachments" 	: attachments
 								"channel"		: res.message.room
 							})
-							res.send "Posting data : postData = #{postData}"
 							robot.http(slackWebhook)
 									.post(postData) (err, response, body) ->
 										switch response.statusCode
