@@ -10,29 +10,29 @@
 #	process.env.SLACK_WEB_HOOK_FOURSQUARE
 #
 # Commands:
-#	cover.bot fsq NYC <query> - Get info about the restaurant near NYC best matching <query>
-#	cover.bot fsq SF <query> - Get info about the restaurant near SF best matching <query>
-#	cover.bot fsq LA <query> - Get info about the restaurant near LA best matching <query>
-#	cover.bot fsq LON <query> - Get info about the restaurant near LON best matching <query>
+#	cover.bot 4sq NYC <query> - Get info about the restaurant near NYC best matching <query>
+#	cover.bot 4sq SF <query> - Get info about the restaurant near SF best matching <query>
+#	cover.bot 4sq LA <query> - Get info about the restaurant near LA best matching <query>
+#	cover.bot 4sq LON <query> - Get info about the restaurant near LON best matching <query>
 #
 
 require "./helpers"
 
 module.exports = (robot) ->
 
-	robot.respond /fsq NYC (.*)/i, (res) ->
+	robot.respond /4sq NYC (.*)/i, (res) ->
 		query = res.match[1]
 		searchRestaurant(robot, res, query, 40.755574, -73.979252)
 
-	robot.respond /fsq SF (.*)/i, (res) ->
+	robot.respond /4sq Sf (.*)/i, (res) ->
 		query = res.match[1]
 		searchRestaurant(robot, res, query, 37.777410, -122.458371)
 
-	robot.respond /fsq LA (.*)/i, (res) ->
+	robot.respond /4sq LA (.*)/i, (res) ->
 		query = res.match[1]
 		searchRestaurant(robot, res, query, 34.057381, -118.334281)
 
-	robot.respond /fsq LON (.*)/i, (res) ->
+	robot.respond /4sq LON (.*)/i, (res) ->
 		query = res.match[1]
 		searchRestaurant(robot, res, query, 51.528428, -0.196012)
 
@@ -104,7 +104,7 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 					if venue.price?
 						fields.push {
 							"title"			: "Price"
-							"value"			: "#{repeat(venue.price.currency, venue.price.tier)} - #{venue.price.message}"
+							"value"			: "#{venue.price.message} (#{repeat(venue.price.currency, venue.price.tier)})"
 							"short"			: true
 						}
 
@@ -137,7 +137,7 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 						}
 
 					if venue.tips?
-						tips = venue.tips.groups[0].items[..2].map (t) -> "#{t.text} - #{t.user.firstName} #{t.user.lastName || ""}"
+						tips = venue.tips.groups[0].items[..2].map (t) -> "#{t.text} _\u2014#{t.user.firstName} #{t.user.lastName || ""}_"
 						fields.push {
 							"title"			: "Tips"
 							"value"			: tips.join("\n\n")
@@ -153,11 +153,12 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 							"fields"		: fields
 							"text"			: "#{venue.url}\n#{venue.description || ""}"
 							"thumb_url"		: "#{firstPhoto.prefix}100x100#{firstPhoto.suffix}"
+							"mrkdwn_in"		: ["text", "pretext", "fields"]
 						}]
 
 					postData = JSON.stringify({
 						"attachments" 	: attachments
-						"channel"		: formattedChannel res
+#						"channel"		: formattedChannel res
 					})
 					robot.http(slackWebhook)
 						.post(postData) (err, response, body) ->

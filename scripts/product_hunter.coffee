@@ -60,6 +60,7 @@ module.exports = (robot) ->
 						"title_link"	: post.discussion_url
 						"text"			: post.tagline
 						"thumb_url"		: post.screenshot_url["300px"]
+						"mrkdwn_in"		: ["text", "pretext", "fields"]
 					}
 
 				postData = JSON.stringify({
