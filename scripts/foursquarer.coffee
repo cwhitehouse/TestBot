@@ -165,7 +165,7 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 
 					postData = JSON.stringify({
 						"attachments" 	: attachments
-#						"channel"		: formattedChannel res
+						"channel"		: formattedChannel res
 					})
 					robot.http(slackWebhook)
 						.post(postData) (err, response, body) ->
