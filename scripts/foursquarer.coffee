@@ -10,29 +10,29 @@
 #	process.env.SLACK_WEB_HOOK_FOURSQUARE
 #
 # Commands:
-#	cover.bot restaurants NYC <query> - Get info about the restaurant near NYC best matching <query>
-#	cover.bot restaurants SF <query> - Get info about the restaurant near SF best matching <query>
-#	cover.bot restaurants LA <query> - Get info about the restaurant near LA best matching <query>
-#	cover.bot restaurants LON <query> - Get info about the restaurant near LON best matching <query>
+#	cover.bot find NYC <query> - Get info about the restaurant near NYC best matching <query>
+#	cover.bot find SF <query> - Get info about the restaurant near SF best matching <query>
+#	cover.bot find LA <query> - Get info about the restaurant near LA best matching <query>
+#	cover.bot find LON <query> - Get info about the restaurant near LON best matching <query>
 #
 
 require "./helpers"
 
 module.exports = (robot) ->
 
-	robot.respond /restaurants NYC (.*)/i, (res) ->
+	robot.respond /find NYC (.*)/i, (res) ->
 		query = res.match[1]
 		searchRestaurant(robot, res, query, 40.755574, -73.979252)
 
-	robot.respond /restaurants SF (.*)/i, (res) ->
+	robot.respond /find SF (.*)/i, (res) ->
 		query = res.match[1]
 		searchRestaurant(robot, res, query, 37.777410, -122.458371)
 
-	robot.respond /restaurants LA (.*)/i, (res) ->
+	robot.respond /find LA (.*)/i, (res) ->
 		query = res.match[1]
 		searchRestaurant(robot, res, query, 34.057381, -118.334281)
 
-	robot.respond /restaurants LON (.*)/i, (res) ->
+	robot.respond /find LON (.*)/i, (res) ->
 		query = res.match[1]
 		searchRestaurant(robot, res, query, 51.528428, -0.196012)
 
