@@ -144,8 +144,8 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 						}
 
 					description == null
-					if venue.name || venue.description
-						description = "#{venue.name || ""}\n#{venue.description || ""}"
+					if venue.url || venue.description
+						description = "#{venue.url || ""}\n#{venue.description || ""}"
 
 					photoURL = null
 					if venue.photos?.groups?[0]?.items?[0]?
