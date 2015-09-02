@@ -26,21 +26,58 @@ module.exports = (robot) ->
 			res.send "Please set the PRODUCT_HUNT_API_TOKEN environment variable"
 			return
 
+		slackWebhook = process.env.SLACK_WEB_HOOK
+		unless slackWebhook
+			res.send "Please set the SLACK_WEB_HOOK environment variable"
+			return
+
+		res.send "Received message from #{res.message.room}"
+
 		robot.http("https://api.producthunt.com/v1/posts")
 			.headers("Authorization": "Bearer #{productHuntToken}", "Accept": "application/json", "Content-Type": "application/json", "Host": "api.producthunt.com")
 			.get() (err, response, body) ->
 				switch response.statusCode
-					when 201
+					when 200
 						data = null
 						try
 							data = JSON.parse body
+
+							attachments = []
+
+							posts = data.posts
+							for post in posts[..5]
+								fallback = "#{post.name}\n#{post.tagline}\n#{post.discussion_url}"
+
+								attachment = {
+									"fallback"		: fallback
+									"color"			: "#da552f"
+									"author_name"	: post.user.name
+									"author_link"	: post.user.profile_url
+									"author_icon"	: post.user.image_url["32px"]
+									"title"			: post.name
+									"title_link"	: post.discussion_url
+									"text"			: post.tagline
+									"image_url"		: post.screenshot_url["300px"]
+								}
+								attachments.push attachment
+
+							postData = JSON.stringify({
+								"attachments" 	: attachments
+								"channel"		: res.message.room
+							})
+							res.send "Posting data : postData = #{postData}"
+							robot.http(slackWebhook)
+									.post(postData) (err, response, body) ->
+										switch response.statusCode
+											when 200
+												return
+											else
+												res.send "Slack web hook failed with error #{response.statusCode}"
+
 						catch error
 							res.send "Failed to parse JSON"
-							return
-
-						res.send "#{body}"
 					else
-						ms.send "Call failed with code #{response.statusCode}"
+						res.send "Product hunt call failed with error #{response.statusCode}"
 
 
 				
