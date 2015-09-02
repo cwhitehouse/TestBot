@@ -136,25 +136,28 @@ searchRestaurant = (robot, res, query, lat, lon) ->
 							"value"			: phrases.join(", ")
 						}
 
-					if venue.tips?.groups?.items?
+					if venue.tips?.groups?[0]?.items?
 						tips = venue.tips.groups[0].items[..2].map (t) -> "#{t.text} _\u2014#{t.user.firstName} #{t.user.lastName || ""}_"
 						fields.push {
 							"title"			: "Tips"
 							"value"			: tips.join("\n\n")
 						}
 
-					if venue.photos?
+					photoURL = null
+					if venue.photos?.groups?[0]?.items?[0]?
 						firstPhoto = venue.photos.groups[0].items[0]
-						attachments = [{
-							"fallback"		: "#{venue.name}\n#{venue.description || "No description"}"
-							"color"			: "#0732a2"
-							"title"			: venue.name
-							"title_link"	: venue.canonicalUrl
-							"fields"		: fields
-							"text"			: "#{venue.url}\n#{venue.description || ""}"
-							"thumb_url"		: "#{firstPhoto.prefix}100x100#{firstPhoto.suffix}"
-							"mrkdwn_in"		: ["text", "pretext", "fields"]
-						}]
+						photoURL =  "#{firstPhoto.prefix}100x100#{firstPhoto.suffix}"
+
+					attachments = [{
+						"fallback"		: "#{venue.name}\n#{venue.description || "No description"}"
+						"color"			: "#0732a2"
+						"title"			: venue.name
+						"title_link"	: venue.canonicalUrl
+						"fields"		: fields
+						"text"			: "#{venue.url}\n#{venue.description || ""}"
+						"thumb_url"		: photoURL
+						"mrkdwn_in"		: ["text", "pretext", "fields"]
+					}]
 
 					postData = JSON.stringify({
 						"attachments" 	: attachments
